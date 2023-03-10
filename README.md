@@ -1,2 +1,3 @@
-# ProjekatFMSI
-Biblioteka za rad sa regularnim jezicima. DKA, ENKA, Regularni izrazi
+# The library designed for working with regular languages
+
+Within the repository, there exists a library and an accompanying application that utilizes it. The library is comprised of classes that implement a deterministic finite automata, an epsilon non-deterministic finite automata, a regular expression, and a lexer. The purpose of the program is to simulate regular expressions in a simplified manner. By loading a finite automata from a file, users can determine whether it "accepts" or "rejects"(ends up in an unreachable state or a non-final state). Additionally, regular expressions (regex) can be loaded from a file and converted into one of the automata, allowing for the same functionalities. A code generator is also available and generates a Java programming language class capable of executing user-specified actions on the automata through interface inheritance. The regular expressions feature operations are and, or, and Kleene star.
