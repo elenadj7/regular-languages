@@ -23,7 +23,7 @@ public class Lexer {
 
     }
 
-    private void MakeTokens(){
+    private void makeTokens(){
 
         for(int i = 0; i < expression.length(); ++i){
 
@@ -45,7 +45,7 @@ public class Lexer {
 
     }
 
-    private void RemoveWhitespaces(){
+    private void removeWhitespaces(){
 
         Vector<Character> newTokes = new Vector<>();
 
@@ -76,10 +76,10 @@ public class Lexer {
      * dozvoljeno da se nalaze u vektoru jedan kraj drugog
      * @throws Exception ako se pronadje greska u tokenima
      */
-    public void LexicalAnalysis()throws Exception{
+    public void lexicalAnalysis()throws Exception{
 
-        MakeTokens();
-        RemoveWhitespaces();
+        makeTokens();
+        removeWhitespaces();
 
         if(brackets != 0){
 
@@ -162,7 +162,7 @@ public class Lexer {
      * Geter za tokene
      * @return tokene
      */
-    public Vector<Character> GetTokens(){
+    public Vector<Character> getTokens(){
         return tokens;
     }
 

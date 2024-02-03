@@ -19,33 +19,33 @@ public class App {
             case 0:
 
             Dfa dfa = new Dfa();
-            dfa.ReadFromFile(filename);
+            dfa.readFromFile(filename);
 
             System.out.println("Word: ");
             String word1 = scanner.nextLine();
 
-            System.out.println(dfa.Accepts(word1));
+            System.out.println(dfa.accepts(word1));
             break;
 
             case 1:
 
             ENfa enfa = new ENfa();
-            enfa.ReadFromFile(filename);
+            enfa.readFromFile(filename);
     
             System.out.println("Word: ");
             String word2 = scanner.nextLine();
 
-            System.out.println(enfa.Accepts(word2));
+            System.out.println(enfa.accepts(word2));
             break;
 
             case 2:
 
             RegularExpression regex = new RegularExpression("");
-            regex.ReadFromFile(filename);
+            regex.readFromFile(filename);
 
             System.out.println("Word: ");
             String word3 = scanner.nextLine();
-            System.out.println(regex.TransformToENfa().Accepts(word3));
+            System.out.println(regex.transformToENfa().accepts(word3));
             break;
 
             case 3:
@@ -54,9 +54,9 @@ public class App {
             String dfaName = scanner.next();
 
             Dfa dfa2 = new Dfa();
-            dfa2.ReadFromFile(dfaName);
+            dfa2.readFromFile(dfaName);
 
-            dfa2.Generate(filename);
+            //dfa2.generate(filename);
             break;
 
             default:

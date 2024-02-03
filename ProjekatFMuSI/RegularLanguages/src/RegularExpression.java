@@ -32,7 +32,7 @@ public class RegularExpression {
      * @param operator operator ciji se prioritet provjerava
      * @return vrijednost prioriteta
      */
-    private Integer OperatorsPriority(Character operator){
+    private Integer operatorsPriority(Character operator){
         switch(operator){
             case '*':
             return 3;
@@ -60,13 +60,13 @@ public class RegularExpression {
      * je na vrhu steka.
      * @return regularni izraz u postfiksnom obliku 
      */
-    private String ConvertToPostfix(){
+    private String convertToPostfix(){
 
         try{
 
             Lexer lexer = new Lexer(expression);
-            lexer.LexicalAnalysis();
-            Vector<Character> tokens = lexer.GetTokens();
+            lexer.lexicalAnalysis();
+            Vector<Character> tokens = lexer.getTokens();
 
             String postfix = new String();
             
@@ -91,7 +91,7 @@ public class RegularExpression {
                 }
                 else{
     
-                    while(!operators.empty() && OperatorsPriority(tmp) <= OperatorsPriority(operators.lastElement())){
+                    while(!operators.empty() && operatorsPriority(tmp) <= operatorsPriority(operators.lastElement())){
     
                         postfix += operators.pop();
                     }
@@ -123,13 +123,13 @@ public class RegularExpression {
      * stek. Algoritam zavrsava kada jedan automat ostane na steku i kada se prodje kroz cijeli postfiksi oblik.
      * @return Epsilon NKA dobijen od regularnog izraza
      */
-    public ENfa TransformToENfa(){
+    public ENfa transformToENfa(){
 
         try{
             
             Lexer lexer = new Lexer(expression);
-            lexer.LexicalAnalysis();
-            String postfix = ConvertToPostfix();
+            lexer.lexicalAnalysis();
+            String postfix = convertToPostfix();
             Stack<ENfa> enfa = new Stack<>();
     
             for(int i = 0; i < postfix.length(); ++i){
@@ -141,26 +141,26 @@ public class RegularExpression {
                     ENfa first = enfa.pop();
                     ENfa second = enfa.pop();
     
-                    enfa.push(second.Union(first));
+                    enfa.push(second.union(first));
                 }
                 else if(tmp == '.'){
     
                     ENfa first = enfa.pop();
                     ENfa second = enfa.pop();
     
-                    enfa.push(second.Concatenation(first));
+                    enfa.push(second.concatenation(first));
                 }
                 else if(tmp == '*'){
     
                     ENfa first = enfa.pop();
     
-                    enfa.push(first.KleeneStar());
+                    enfa.push(first.kleeneStar());
                 }
                 else if(tmp != '(' && tmp != ')'){
                     
                     ENfa first = new ENfa();
     
-                    enfa.push(first.OneSymbolENfa(tmp));
+                    enfa.push(first.oneSymbolENfa(tmp));
                 }
             }
     
@@ -184,8 +184,8 @@ public class RegularExpression {
      * sto prvo izraz transformise u ENKA a zatim ENKA transformise u DKA
      * @return deterministicki konacni automat dobijen od regularnog izraza
      */
-    public Dfa TransformToDfa(){
-        return TransformToENfa().TransformToDfa();
+    public Dfa transformToDfa(){
+        return transformToENfa().transformToDfa();
     }
 
     /**
@@ -194,16 +194,16 @@ public class RegularExpression {
      * @param other regularni izraz koji se poredi sa pozivaocem
      * @return true ako su izrazi jednaki, false ako nisu
      */
-    public Boolean AreEquals(RegularExpression other){
+    public Boolean areEquals(RegularExpression other){
 
-        return this.TransformToDfa().AreEquals(other.TransformToDfa());
+        return this.transformToDfa().areEquals(other.transformToDfa());
     }
 
     /**
      * Upisuje regularni izraz u fajl
      * @param filename naziv fajla
      */
-    public void WriteToFile(String filename){
+    public void writeToFile(String filename){
 
         try{
 
@@ -223,7 +223,7 @@ public class RegularExpression {
      * Ucitava regularni izraz iz fajla
      * @param filename naziv fajla
      */
-    public void ReadFromFile(String filename){
+    public void readFromFile(String filename){
 
         try{
 
@@ -232,7 +232,7 @@ public class RegularExpression {
             reader.close();
 
             Lexer lexer = new Lexer(expression);
-            lexer.LexicalAnalysis();
+            lexer.lexicalAnalysis();
 
         }
         catch(Exception e){

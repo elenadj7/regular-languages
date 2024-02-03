@@ -45,7 +45,7 @@ public class ENfa {
      * Dodaje novo pocetno stanje
      * @param state novo pocetno stanje
      */
-    public void SetStartState(String state){
+    public void setStartState(String state){
         startState = state;
     }
 
@@ -53,7 +53,7 @@ public class ENfa {
      * Dodaje novo finalno stanje
      * @param state novo finalno stanje
      */
-    public void AddFinalState(String state){
+    public void addFinalState(String state){
         finalStates.add(state);
     }
 
@@ -63,7 +63,7 @@ public class ENfa {
      * @param symbol simbol za koji se prelazi u sljedece stanje
      * @param nextState novo sljedece stanje
      */
-    public void AddTransition(String currentState, Character symbol, String nextState){
+    public void addTransition(String currentState, Character symbol, String nextState){
         Pair key = new Pair(currentState, symbol);
         if(deltaFunction.containsKey(key)){
             deltaFunction.get(key).add(nextState);
@@ -83,7 +83,7 @@ public class ENfa {
      * @param state stanje od kojeg se trazi closure
      * @return set svih stanja koja se dobiju closure-om proslijedjenog stanja
      */
-    public HashSet<String> Closure(String state){
+    public HashSet<String> closure(String state){
         HashSet<String> closure = new HashSet<>();
         try{
             closure.addAll(deltaFunction.get(new Pair(state, '$')));
@@ -118,8 +118,8 @@ public class ENfa {
      * @param inputString rijec koju provjerava da li pripada jeziku
      * @return true ako rijec pripada jeziku, false ako ne pripada
      */
-    public boolean Accepts(String inputString){
-        HashSet<String> currentState = Closure(startState);
+    public boolean accepts(String inputString){
+        HashSet<String> currentState = closure(startState);
         for(int i = 0; i < inputString.length(); ++i){
             HashSet<String> tmpState = new HashSet<String>();
             for(String state : currentState){
@@ -132,11 +132,11 @@ public class ENfa {
             HashSet<String> tmpClosure = new HashSet<String>();
 
             for(String state : tmpState){
-                tmpClosure.addAll(Closure(state));
+                tmpClosure.addAll(closure(state));
             }
             currentState = tmpClosure;
         }
-        if(IsFinal(currentState)){
+        if(isFinal(currentState)){
             return true;
         }
         return false;
@@ -148,15 +148,15 @@ public class ENfa {
      * Finalna stanja formira tako sto dodaje samo novo stanje u finalno.
      * @return novi automat koji je rezultat primjene Kleene-ovog operatora nad jezikom
      */
-    public ENfa KleeneStar(){
+    public ENfa kleeneStar(){
         ENfa ret = new ENfa();
         String retStartState = "&";
-        ret.SetStartState(retStartState);
-        ret.AddFinalState(retStartState);
-        ret.AddTransition(retStartState, '$', startState);
+        ret.setStartState(retStartState);
+        ret.addFinalState(retStartState);
+        ret.addTransition(retStartState, '$', startState);
         ret.deltaFunction.putAll(deltaFunction);
         for(var element : finalStates){
-            ret.AddTransition(element, '$', retStartState);
+            ret.addTransition(element, '$', retStartState);
         }
         return ret;
     }
@@ -169,19 +169,19 @@ public class ENfa {
      * @param other automat koji se konkatenira sa pozivaocem
      * @return novi automat koji je rezultat primjene operatora konkatenacije nad dva automata
      */
-    public ENfa Concatenation(ENfa other){
+    public ENfa concatenation(ENfa other){
         ENfa ret = new ENfa();
 
-        ret.SetStartState(startState);
+        ret.setStartState(startState);
         ret.deltaFunction.putAll(deltaFunction);
         ret.deltaFunction.putAll(other.deltaFunction);
         ret.finalStates.addAll(other.finalStates);
         
         for(var element : finalStates){
-            ret.AddTransition(element, '$', "#");
+            ret.addTransition(element, '$', "#");
         }
 
-        ret.AddTransition("#", '$', other.startState);
+        ret.addTransition("#", '$', other.startState);
 
         return ret;
     }
@@ -193,7 +193,7 @@ public class ENfa {
      * @param other automat nad kojim se vrsi unija zajedno za pozivaocem
      * @return novi automat koji je rezultat primjene operatora unije nad dva automata
      */
-    public ENfa Union (ENfa other){
+    public ENfa union (ENfa other){
         ENfa ret = new ENfa();
 
         ret.deltaFunction.putAll(deltaFunction);
@@ -201,12 +201,12 @@ public class ENfa {
         ret.finalStates.addAll(finalStates);
         ret.finalStates.add("/");
 
-        ret.SetStartState("%");
-        ret.AddTransition("%", '$', startState);
-        ret.AddTransition("%", '$', other.startState);
+        ret.setStartState("%");
+        ret.addTransition("%", '$', startState);
+        ret.addTransition("%", '$', other.startState);
         for(var element : other.finalStates){
 
-            ret.AddTransition(element, '$', "/");
+            ret.addTransition(element, '$', "/");
 
         }
 
@@ -217,11 +217,11 @@ public class ENfa {
      * Pronalazi sve simbole u jeziku.
      * @return alfabet jezika
      */
-    private HashSet<Character> GetSymbols(){
+    private HashSet<Character> getSymbols(){
         HashSet<Character> ret = new HashSet<>();
         for (Entry<Pair, HashSet<String>> stateTransition : this.deltaFunction.entrySet()) {
-            if(stateTransition.getKey().GetSymbol() != '$'){
-                ret.add(stateTransition.getKey().GetSymbol());
+            if(stateTransition.getKey().getSymbol() != '$'){
+                ret.add(stateTransition.getKey().getSymbol());
             }
         }
         return ret;
@@ -232,7 +232,7 @@ public class ENfa {
      * @param states skup stanja koja se konkateniraju
      * @return naziv novog stanja
      */
-    private String MakeString(HashSet<String> states){
+    private String makeString(HashSet<String> states){
         String ret = new String();
         for(var element : states){
             ret = ret.concat(element);
@@ -245,7 +245,7 @@ public class ENfa {
      * @param states skup stanja u kojem se trazi bar jedno finalno stanje
      * @return true ako postoji bar jedno finalno stanje u skupu, false ako ne postoji 
      */
-    private boolean IsFinal(HashSet<String> states){
+    private boolean isFinal(HashSet<String> states){
         for(var element : states){
             if(finalStates.contains(element)){
                 return true;
@@ -259,17 +259,17 @@ public class ENfa {
      * stanje trazi closure.
      * @return novi automat koji je tipa DKA
      */
-    public Dfa TransformToDfa(){
+    public Dfa transformToDfa(){
         if(deltaFunction.isEmpty()){
             return new Dfa();
         }
         
         Dfa ret = new Dfa();
         Vector<HashSet<String>> toVisit = new Vector<>();
-        HashSet<String> newStartState = Closure(startState);
+        HashSet<String> newStartState = closure(startState);
         toVisit.add(newStartState);
-        HashSet<Character> symbols = GetSymbols();
-        ret.SetStartState(MakeString(newStartState));
+        HashSet<Character> symbols = getSymbols();
+        ret.setStartState(makeString(newStartState));
         for(int i = 0; i < toVisit.size(); ++i){
             HashSet<String> iterate = toVisit.elementAt(i);
             for(var transition : symbols){
@@ -282,12 +282,12 @@ public class ENfa {
                 }
                 HashSet<String> tmpstates2 = new HashSet<>();
                 for(var tmpclosure : tmpstates1){
-                    tmpstates2.addAll(Closure(tmpclosure));
+                    tmpstates2.addAll(closure(tmpclosure));
                 }
-                if(IsFinal(tmpstates2)){
-                    ret.AddFinalState(MakeString(tmpstates2));
+                if(isFinal(tmpstates2)){
+                    ret.addFinalState(makeString(tmpstates2));
                 }
-                ret.AddTransition(MakeString(iterate), transition, MakeString(tmpstates2));
+                ret.addTransition(makeString(iterate), transition, makeString(tmpstates2));
                 if(!toVisit.contains(tmpstates2)){
                     toVisit.insertElementAt(tmpstates2, toVisit.size());
                 }
@@ -302,13 +302,13 @@ public class ENfa {
      * @param symbol simbol od kojeg se formira novi ENKA
      * @return novi ENKA 
      */
-    public ENfa OneSymbolENfa(Character symbol){
+    public ENfa oneSymbolENfa(Character symbol){
         ENfa ret = new ENfa();
 
-        ret.SetStartState(symbol.toString() + "0");
-        ret.AddFinalState(symbol.toString() + "1");
-        ret.AddTransition(symbol.toString() + "0", symbol, symbol.toString() + "1");
-        ret.AddTransition(symbol.toString() + "1", symbol, symbol.toString() + "2");
+        ret.setStartState(symbol.toString() + "0");
+        ret.addFinalState(symbol.toString() + "1");
+        ret.addTransition(symbol.toString() + "0", symbol, symbol.toString() + "1");
+        ret.addTransition(symbol.toString() + "1", symbol, symbol.toString() + "2");
 
         return ret;
     }
@@ -319,16 +319,16 @@ public class ENfa {
      * @param other ENKA koji se poredi sa pozivajucim ENKA
      * @return true ako su jednaki, false ako nisu
      */
-    public Boolean AreEquals(ENfa other){
+    public Boolean areEquals(ENfa other){
 
-        return this.TransformToDfa().AreEquals(other.TransformToDfa());
+        return this.transformToDfa().areEquals(other.transformToDfa());
     }
 
     /**
      * Upisuje automat u fajl
      * @param filename naziv fajla
      */
-    public void WriteToFile(String filename){
+    public void writeToFile(String filename){
 
         try{
             FileWriter writer = new FileWriter(filename);
@@ -344,7 +344,7 @@ public class ENfa {
 
             for (Entry<Pair, HashSet<String>> stateTransition : deltaFunction.entrySet()){
                 
-                writer.write(stateTransition.getKey().GetState() + "-" + stateTransition.getKey().GetSymbol() + "-");
+                writer.write(stateTransition.getKey().getState() + "-" + stateTransition.getKey().getSymbol() + "-");
 
                 for(var element : stateTransition.getValue()){
                     writer.write(element + ",");
@@ -368,7 +368,7 @@ public class ENfa {
      * Ucitava automat iz fajla
      * @param filename naziv fajla
      */
-    public void ReadFromFile(String filename){
+    public void readFromFile(String filename){
         
         try{
 
@@ -376,7 +376,7 @@ public class ENfa {
             
             String line = reader.readLine();
 
-            SetStartState(line);
+            setStartState(line);
 
             line = reader.readLine();
 
@@ -384,7 +384,7 @@ public class ENfa {
             for(int i = 0; i < line.length(); ++i){
 
                 if(line.charAt(i) == '-'){
-                    AddFinalState(line.substring(pointer, i));
+                    addFinalState(line.substring(pointer, i));
                     pointer = i + 1;
                 }
 
@@ -415,7 +415,7 @@ public class ENfa {
                 
                 for(var element : states){
 
-                    AddTransition(transitions.elementAt(0), transitions.elementAt(1).charAt(0), element);
+                    addTransition(transitions.elementAt(0), transitions.elementAt(1).charAt(0), element);
                 }
 
                 line = reader.readLine();

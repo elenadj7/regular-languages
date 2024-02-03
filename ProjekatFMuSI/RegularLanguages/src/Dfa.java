@@ -43,7 +43,7 @@ public class Dfa {
      * Postavlja novo pocetno stanje
      * @param state novo pocetno stanje
      */
-    public void SetStartState(String state){
+    public void setStartState(String state){
         startState = state;
     }
 
@@ -51,7 +51,7 @@ public class Dfa {
      * Dodaje novo finalno stanje
      * @param state finalno stanje
      */
-    public void AddFinalState(String state){
+    public void addFinalState(String state){
         finalStates.add(state);
     }
 
@@ -61,7 +61,7 @@ public class Dfa {
      * @param newSymbol simbol za koji se prelazi u sljedece stanje
      * @param nextState novo sljedece stanje
      */
-    public void AddTransition(String currentState, Character newSymbol, String nextState){
+    public void addTransition(String currentState, Character newSymbol, String nextState){
         deltaFunction.put(new Pair(currentState, newSymbol), nextState);
     }
 
@@ -73,7 +73,7 @@ public class Dfa {
      * @param inputString rijec koju automat ispituje
      * @return vrijednost true ako prihvata a false ako ne prihvata rijec 
      */
-    public boolean Accepts(String inputString){
+    public boolean accepts(String inputString){
         String currentState = startState;
         for (int i = 0; i < inputString.length(); ++i) {
             currentState = deltaFunction.get(new Pair(currentState, inputString.charAt((i))));
@@ -88,16 +88,16 @@ public class Dfa {
      * @param other automat koji ucestvuje u uniji zajedno sa pozivaocem
      * @return novi automat koji predstavlja uniju dva automata
      */
-    public Dfa Union(Dfa other){
+    public Dfa union(Dfa other){
         Dfa ret = new Dfa();
         ret.startState = startState + other.startState;
         for (var element1 : deltaFunction.keySet()) {
             for(var element2 : other.deltaFunction.keySet()){
-                if(element1.GetSymbol() == element2.GetSymbol()){
+                if(element1.getSymbol() == element2.getSymbol()){
                     ret.deltaFunction.put(element1.sumOfPairs(element2), deltaFunction.get(element1) + other.deltaFunction.get(element2));
                 }
-                if(finalStates.contains(element1.GetState()) || other.finalStates.contains(element2.GetState())){
-                    ret.finalStates.add(element1.GetState() + element2.GetState());
+                if(finalStates.contains(element1.getState()) || other.finalStates.contains(element2.getState())){
+                    ret.finalStates.add(element1.getState() + element2.getState());
                 }
             }
         }
@@ -111,16 +111,16 @@ public class Dfa {
      * @param other automat koji ucestvuje u presjeku zajedno za pozivaocem
      * @return novi automat koji predstavlja presjek dva automata
      */
-    public Dfa Intersection(Dfa other){
+    public Dfa intersection(Dfa other){
         Dfa ret = new Dfa();
         ret.startState = startState + other.startState;
         for (var element1 : deltaFunction.keySet()) {
             for(var element2 : other.deltaFunction.keySet()){
-                if(element1.GetSymbol() == element2.GetSymbol()){
+                if(element1.getSymbol() == element2.getSymbol()){
                     ret.deltaFunction.put(element1.sumOfPairs(element2), deltaFunction.get(element1) + other.deltaFunction.get(element2));
                 }
-                if(finalStates.contains(element1.GetState()) && other.finalStates.contains(element2.GetState())){
-                    ret.finalStates.add(element1.GetState() + element2.GetState());
+                if(finalStates.contains(element1.getState()) && other.finalStates.contains(element2.getState())){
+                    ret.finalStates.add(element1.getState() + element2.getState());
                 }
             }
         }
@@ -134,16 +134,16 @@ public class Dfa {
      * @param other automat koji ucestvuje u razlici 
      * @return novi automat koji predstavlja razliku this i other automata
      */
-    public Dfa Diference(Dfa other){
+    public Dfa diference(Dfa other){
         Dfa ret = new Dfa();
         ret.startState = startState + other.startState;
         for (var element1 : deltaFunction.keySet()) {
             for(var element2 : other.deltaFunction.keySet()){
-                if(element1.GetSymbol() == element2.GetSymbol()){
+                if(element1.getSymbol() == element2.getSymbol()){
                     ret.deltaFunction.put(element1.sumOfPairs(element2), deltaFunction.get(element1) + other.deltaFunction.get(element2));
                 }
-                if(finalStates.contains(element1.GetState()) && !other.finalStates.contains(element2.GetState())){
-                    ret.finalStates.add(element1.GetState() + element2.GetState());
+                if(finalStates.contains(element1.getState()) && !other.finalStates.contains(element2.getState())){
+                    ret.finalStates.add(element1.getState() + element2.getState());
                 }
             }
         }
@@ -155,12 +155,12 @@ public class Dfa {
      * formira od stanja koja nisu finalna u automatu nad kojim se vrsi komplement.
      * @return automat koji predstavlja komplement pozivaoca
      */
-    public Dfa Complement(){
+    public Dfa complement(){
         Dfa ret = new Dfa();
         ret.startState = startState;
         for(var element : deltaFunction.keySet()){
-            if(!finalStates.contains(element.GetState())){
-                ret.finalStates.add(element.GetState());
+            if(!finalStates.contains(element.getState())){
+                ret.finalStates.add(element.getState());
             }
             ret.deltaFunction.put(element, deltaFunction.get(element));
         }
@@ -174,7 +174,7 @@ public class Dfa {
      * @param other automat koji se spaja zajedno sa pozivaocem
      * @return novi automat koji je konkatenacija dva automata
      */
-    public Dfa Concatenation(Dfa other){
+    public Dfa concatenation(Dfa other){
         Dfa ret = new Dfa();
         ret.startState = startState;
         ret.finalStates = other.finalStates;
@@ -196,10 +196,10 @@ public class Dfa {
      * Pretrazuje funkciju prelaza i trazi sve simbole jezika
      * @return alfabet jezika
      */
-    private HashSet<Character> GetSymbols(){
+    private HashSet<Character> getSymbols(){
         HashSet<Character> ret = new HashSet<>();
         for (Map.Entry<Pair, String> stateTransition : this.deltaFunction.entrySet()) {
-                ret.add(stateTransition.getKey().GetSymbol());
+                ret.add(stateTransition.getKey().getSymbol());
         }
         return ret;
     }
@@ -208,10 +208,10 @@ public class Dfa {
      * Pretrazuje funkciju prelaza i trazi sva stanja automata
      * @return skup stanja automata
      */
-    private HashSet<String> GetStates(){
+    private HashSet<String> getStates(){
         HashSet<String> ret = new HashSet<>();
         for(Map.Entry<Pair, String> stateTransition : deltaFunction.entrySet()){
-            ret.add(stateTransition.getKey().GetState());
+            ret.add(stateTransition.getKey().getState());
         }
         return ret;
     }
@@ -232,20 +232,20 @@ public class Dfa {
      * tu mapu.
      * @param statename naziv stanja
      */
-    public void RenameStates(String statename){
+    public void renameStates(String statename){
         Integer position = 0;
         HashMap<String, String> newNames = new HashMap<>();
 
         newNames.put(startState, statename + position.toString());
         position++;
 
-        SetStartState(newNames.get(startState));
+        setStartState(newNames.get(startState));
 
         for (Map.Entry<Pair, String> stateTransition : this.deltaFunction.entrySet()) {
             
-            if(!newNames.containsKey(stateTransition.getKey().GetState())){
+            if(!newNames.containsKey(stateTransition.getKey().getState())){
 
-                newNames.put(stateTransition.getKey().GetState(), statename + position.toString());
+                newNames.put(stateTransition.getKey().getState(), statename + position.toString());
                 position++;
 
             }
@@ -270,7 +270,7 @@ public class Dfa {
         HashMap<Pair, String> newDeltaFunction = new HashMap<>();
         for (Map.Entry<Pair, String> stateTransition : this.deltaFunction.entrySet()){
 
-            newDeltaFunction.put(new Pair(newNames.get(stateTransition.getKey().GetState()), stateTransition.getKey().GetSymbol()), newNames.get(stateTransition.getValue()));
+            newDeltaFunction.put(new Pair(newNames.get(stateTransition.getKey().getState()), stateTransition.getKey().getSymbol()), newNames.get(stateTransition.getValue()));
 
         }
 
@@ -291,10 +291,10 @@ public class Dfa {
      * pravi novu funkciju prelaza i u nju stavlja samo prelaze koji nisu u posjeceni. Konacno 
      * se iz funkcije prelaza brisu nedohvatna stanja tako sto se obrisu svi prelazi iz nove funkcije prelaza.
      */
-    public void RemoveInaccessibleStates(){
+    public void removeInaccessibleStates(){
         Vector<String> states = new Vector<>();
         HashSet<String> toVisit = new HashSet<>();
-        HashSet<Character> alphabet = GetSymbols();
+        HashSet<Character> alphabet = getSymbols();
 
         states.add(startState);
 
@@ -315,7 +315,7 @@ public class Dfa {
         HashMap<Pair, String> newDeltaFunction = new HashMap<>();
         for (Map.Entry<Pair, String> stateTransition : deltaFunction.entrySet()){
             
-            if(!toVisit.contains(stateTransition.getKey().GetState())){
+            if(!toVisit.contains(stateTransition.getKey().getState())){
 
                 newDeltaFunction.put(stateTransition.getKey(), stateTransition.getValue());
             }
@@ -334,7 +334,7 @@ public class Dfa {
      * prelaza mogle porediti.
      * @param symbols alfabet automata
      */
-    private void SortTransitions(HashSet<Character> symbols){
+    private void sortTransitions(HashSet<Character> symbols){
 
         Vector<String> toVisit = new Vector<>();
         toVisit.add(startState);
@@ -368,12 +368,12 @@ public class Dfa {
      * @param other automat koji se poredi sa pozivaocem
      * @return true ako su jednaki, false ako nisu
      */
-    public Boolean AreEquals(Dfa other){
-        HashSet<Character> symbols = GetSymbols();
-        SortTransitions(symbols);
-        other.SortTransitions(symbols);
-        RenameStates("q");
-        other.RenameStates("q");
+    public Boolean areEquals(Dfa other){
+        HashSet<Character> symbols = getSymbols();
+        sortTransitions(symbols);
+        other.sortTransitions(symbols);
+        renameStates("q");
+        other.renameStates("q");
 
         Boolean equals = false;
         if(deltaFunction.equals(other.deltaFunction) && startState.equals(other.startState) && finalStates.equals(other.finalStates)){
@@ -388,11 +388,11 @@ public class Dfa {
      * obilazi automat BFS algoritmom.
      * @return duzinu putanje
      */
-    public Integer ShortestPath(){
+    public Integer shortestPath(){
 
         Integer distance = 0;
         Vector<String> toVisit = new Vector<>();
-        HashSet<Character> alphabet = GetSymbols();
+        HashSet<Character> alphabet = getSymbols();
         Vector<String> toVisit2 = new Vector<>();
 
         toVisit.add(startState);
@@ -434,7 +434,7 @@ public class Dfa {
      * Upisuje automat u fajl
      * @param filename naziv fajla
      */
-    public void WriteToFile(String filename){
+    public void writeToFile(String filename){
 
         try{
             FileWriter writer = new FileWriter(filename);
@@ -450,7 +450,7 @@ public class Dfa {
 
             for (Map.Entry<Pair, String> stateTransition : deltaFunction.entrySet()){
                 
-                writer.write(stateTransition.getKey().GetState() + "," + stateTransition.getKey().GetSymbol() + "," + stateTransition.getValue() + "," + "\n");
+                writer.write(stateTransition.getKey().getState() + "," + stateTransition.getKey().getSymbol() + "," + stateTransition.getValue() + "," + "\n");
 
             }
 
@@ -467,7 +467,7 @@ public class Dfa {
      * Ucitava automat iz fajla
      * @param filename naziv fajla
      */
-    public void ReadFromFile(String filename){
+    public void readFromFile(String filename){
 
         try{
 
@@ -475,7 +475,7 @@ public class Dfa {
             
             String line = reader.readLine();
 
-            SetStartState(line);
+            setStartState(line);
 
             line = reader.readLine();
 
@@ -483,7 +483,7 @@ public class Dfa {
             for(int i = 0; i < line.length(); ++i){
 
                 if(line.charAt(i) == ','){
-                    AddFinalState(line.substring(pointer, i));
+                    addFinalState(line.substring(pointer, i));
                     pointer = i + 1;
                 }
 
@@ -504,7 +504,7 @@ public class Dfa {
                     }
                 }
                 
-                AddTransition(transitions.elementAt(0), transitions.elementAt(1).charAt(0), transitions.elementAt(2));
+                addTransition(transitions.elementAt(0), transitions.elementAt(1).charAt(0), transitions.elementAt(2));
                 line = reader.readLine();
 
             }
@@ -519,57 +519,5 @@ public class Dfa {
 
         }
 
-    }
-
-    /**
-     * Metoda koja vrsi generisanje koda na osnovu automata.
-     * @param filename naziv fajla 
-     */
-    public void Generate(String filename){
-
-        try{
-
-            FileWriter writer = new FileWriter(filename);
-            writer.write("import java.util.ArrayList;\n\n");
-            
-            writer.write("interface Lambda<T>{\n\tvoid Act(T t);\n}");
-            writer.write("\n\n");
-            writer.write("class Action{\n\tpublic ArrayList<Lambda<String>> action = new ArrayList<>();\n");
-            writer.write("\tpublic void action(String state){\n\t\tactions.forEach(act -> {act.Act(state);});\n\t}\n}");
-
-            writer.write("\n\n");
-
-            HashSet<Character> symbols = GetSymbols();
-            writer.write("public class Dfa{\n\tpublic Boolean Start(");
-            String text = "String input, Action start, Action end";
-            for(var element : symbols){
-                
-                text += ", Action transition_" + element;
-            }
-            writer.write(text + "){\n\t\t");
-            HashSet<String> states = GetStates();
-            writer.write("String currentState = \"" + startState + "\";\n\t\t");
-            writer.write("for(int i = 0; i < input.Length(); ++i){\n\t\t\tswitch(currentState){");
-            for(var element : states){
-
-                String text2 = "\n\t\t\t\tcase \"" + element + "\":\n\t\t\t\t\tend.Action(currentState);"; 
-                for(var symbol : symbols){
-                    
-                    text2 += "\n\t\t\t\t\tif(element == " + symbol + "){\n\t\t\t\t\t\ttransition_" + symbol + ".action(currentState);";
-                    text2 += "\n\t\t\t\t\t\tcurrentState = \"" + deltaFunction.get(new Pair(element, symbol)) + "\";\n\t\t\t\t\t}";
-
-                }
-                text2 += "\n\t\t\t\t\tstart.action(currentState);\n\t\t\t\t\tbreak;";
-                writer.write(text2);
-            }
-            writer.write("\n\t\t\t}\n\t\t}\n\t\treturn currentState.IsFinal();\n\t}\n}");
-
-            writer.close();
-        }
-        catch(Exception e){
-
-            System.out.println("An error occurred.");
-
-        }
     }
 }

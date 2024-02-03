@@ -26,7 +26,7 @@ public class Pair {
      * Geter za stanje
      * @return stanje
      */
-    public String GetState(){
+    public String getState(){
         return state;
     }
 
@@ -34,7 +34,7 @@ public class Pair {
      * Geter za simbol
      * @return karakter
      */
-    public Character GetSymbol(){
+    public Character getSymbol(){
         return symbol;
     }
 
@@ -42,7 +42,7 @@ public class Pair {
      * Seter za stanje
      * @param newState novo stanje
      */
-    public void SetState(String newState){
+    public void setState(String newState){
         state = newState;
     }
 
@@ -50,7 +50,7 @@ public class Pair {
      * Seter za simbol
      * @param newSymbol novi karakter
      */
-    public void SetSymbol(Character newSymbol){
+    public void setSymbol(Character newSymbol){
         symbol = newSymbol;
     }
 
@@ -67,7 +67,7 @@ public class Pair {
      * Ispis uredjenog para (state, symbol)
      */
     public String toString(){
-        return "state : " + GetState() + "   symbol : " + GetSymbol();
+        return "state : " + getState() + "   symbol : " + getSymbol();
     }
 
     /**
